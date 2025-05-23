@@ -3,6 +3,7 @@ import IconButton from "../buttons/IconButton";
 import ProgressBars from "../../utility/ProgressBars";
 import PausePlayButton from "../buttons/PausePlayButton";
 import SlideActionButton from "../buttons/SlideActionButton";
+import CloseButton from "../buttons/CloseButton";
 
 const SLIDE_DURATION = 3000;
 const PROGRESS_UPDATE_INTERVAL = 50;
@@ -75,13 +76,7 @@ const StoryViewer = ({ story, onClose }) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center flex-col px-4">
             {/* Close Button */}
-            <IconButton
-                onClick={onClose}
-                className="absolute top-5 right-5 text-white text-4xl font-bold hover:text-gray-300 transition z-50"
-                aria-label="Close Story"
-            >
-                &times;
-            </IconButton>
+            <CloseButton onClick={onClose} />
 
             <div className="relative max-w-md w-full flex items-center justify-center p-10">
                 {/* Previous Slide Button */}
