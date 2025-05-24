@@ -13,32 +13,51 @@ const StoryViewer = ({ story, onClose }) => {
     const [progress, setProgress] = useState(0);
     const [paused, setPaused] = useState(false);
 
+    // tracks the timer interval. Holds the setInterval ID
     const intervalRef = useRef(null);
+
+    // tracks the start time when the slide starts or resumes.Records when the current slide started/resumed
     const startTimeRef = useRef(null);
+
+    //  keeps the accumulated time if the user pauses and resumes. Tracks how long the user has been watching 
+    // the current slide (can pause/resume)
     const elapsedTimeRef = useRef(0);
 
     const currentSlide = story.slides[currentIndex];
 
     // Reset progress when slide changes
+    // Whenever you change the slide (either manually or automatically), this hook:
     useEffect(() => {
         setProgress(0);
-        elapsedTimeRef.current = 0;
-        startTimeRef.current = Date.now();
+        elapsedTimeRef.current = 0; // Reset elapsed time
+        startTimeRef.current = Date.now();  // Set current start time
     }, [currentIndex]);
 
     // Handle slide progress animation
     useEffect(() => {
         if (paused) {
-            clearInterval(intervalRef.current);
+            clearInterval(intervalRef.current); // Stop the interval
+
+            // We add the time since startTimeRef to elapsedTimeRef. This saves how much time had passed 
+            // before pausing. So that when it resumes the interval ref have start time
             elapsedTimeRef.current += Date.now() - startTimeRef.current;
+            // It calculates the time between start and till now
             return;
         }
 
+        // when it's resumed (not paused). This backdates the startTimeRef to when the slide originally 
+        // began (accounting for the paused time), so progress doesn't jump.
         startTimeRef.current = Date.now() - elapsedTimeRef.current;
+        // Stores the time frame , where from progres should start after pause
 
+
+        // Every 50ms (set by PROGRESS_UPDATE_INTERVAL), this runs in every 50 ms:
         intervalRef.current = setInterval(() => {
             const now = Date.now();
+            // Checks how long has passed since the slide started, including previous paused time.
             const elapsed = now - startTimeRef.current + elapsedTimeRef.current;
+
+            // Calculates what percentage of the slide duration has elapsed.
             const nextProgress = (elapsed / SLIDE_DURATION) * 100;
 
             if (nextProgress >= 100) {

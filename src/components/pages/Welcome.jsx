@@ -27,7 +27,6 @@ const Welcome = () => {
             <div className="flex items-center gap-6 flex-wrap justify-center px-4 max-w-full">
                 {storiesData.map((story) => (
                     <StoryBoard
-                        key={story.id} // Always include a unique key when mapping
                         story={story}
                         handleStoryClick={handleStoryClick}
                     />
